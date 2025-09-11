@@ -24,5 +24,6 @@ void prompt();
 char *read_input();
 void parse_input(char *input, Command *cmd);
 void execute_command(Command *cmd);
+void log_command(const char *cmd);
 
 #endif
