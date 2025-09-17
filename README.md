@@ -93,6 +93,12 @@ All code follows POSIX.1-2008 with compiler flags:
 -std=c99 -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -Wall -Wextra -Werror
 ```
 
+## Documentation
+
+- **RESUME.md** - Resume entries and project descriptions
+- **Shell Architecture** - Modular design with separate compilation units for parsing, execution, builtins, signals, and job control
+- **POSIX Compliance** - Strict adherence to POSIX.1-2008 standards
+
 ## Author
 
 kRrIsH-T
