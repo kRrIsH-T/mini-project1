@@ -1,0 +1,97 @@
+--- a/kernel/proc.c
++++ b/kernel/proc.c
+@@ -50,6 +50,92 @@ procinit(void)
+   initlock(&p->lock, "proc");
+ }
+
++// FCFS Scheduler
++void
++sched_fcfs(void)
++{
++  struct proc *p;
++  struct cpu *c = mycpu();
++
++  c->proc = 0;
++  for(;;){
++    intr_on();
++    int found = 0;
++    for(p = proc; p < &proc[NPROC]; p++) {
++      acquire(&p->lock);
++      if(p->state == RUNNABLE && p->ctime < c->last_scheduled) {
++        c->proc = p;
++        c->last_scheduled = p->ctime;
++        p->state = RUNNING;
++        swtch(&c->context, &p->context);
++        c->proc = 0;
++        found = 1;
++      }
++      release(&p->lock);
++      if(found) break;
++    }
++  }
++}
++
++// CFS Scheduler
++void
++sched_cfs(void)
++{
++  struct proc *p;
++  struct cpu *c = mycpu();
++  uint64 min_vruntime = -1;
++
++  c->proc = 0;
++  for(;;){
++    intr_on();
++    int found = 0;
++    for(p = proc; p < &proc[NPROC]; p++) {
++      acquire(&p->lock);
++      if(p->state == RUNNABLE && (min_vruntime == -1 || p->vruntime < min_vruntime)) {
++        min_vruntime = p->vruntime;
++        c->proc = p;
++        p->state = RUNNING;
++        swtch(&c->context, &p->context);
++        c->proc = 0;
++        p->vruntime += 1;
++        found = 1;
++      }
++      release(&p->lock);
++      if(found) break;
++    }
++  }
++}
++
++// MLFQ Scheduler
++void
++sched_mlfq(void)
++{
++  struct proc *p;
++  struct cpu *c = mycpu();
++
++  c->proc = 0;
++  for(;;){
++    intr_on();
++    int found = 0;
++    for(int level = 0; level < 4; level++) {
++      for(p = proc; p < &proc[NPROC]; p++) {
++        acquire(&p->lock);
++        if(p->state == RUNNABLE && p->priority == level) {
++          c->proc = p;
++          p->state = RUNNING;
++          swtch(&c->context, &p->context);
++          c->proc = 0;
++          if(p->ticks > (1 << (level + 1))) {
++            p->priority = level + 1;
++          }
++          found = 1;
++        }
++        release(&p->lock);
++        if(found) break;
++      }
++      if(found) break;
++    }
++  }
++}
++
+ void
+ scheduler(void)
+ {

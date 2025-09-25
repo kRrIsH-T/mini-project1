@@ -1,0 +1,35 @@
+--- a/kernel/syscall.c
++++ b/kernel/syscall.c
+@@ -100,6 +100,7 @@ extern uint64 sys_write(void);
+ extern uint64 sys_close(void);
+ extern uint64 sys_uptime(void);
++extern uint64 sys_getreadcount(void);
+
+ static uint64 (*syscalls[])(void) = {
+ [SYS_fork]    sys_fork,
+@@ -111,6 +112,7 @@ static uint64 (*syscalls[])(void) = {
+ [SYS_close]   sys_close,
+ [SYS_uptime]  sys_uptime,
++[SYS_getreadcount] sys_getreadcount,
+ };
+
+ void
+
+--- a/kernel/sysproc.c
++++ b/kernel/sysproc.c
+@@ -89,3 +89,15 @@ sys_uptime(void)
+   release(&tickslock);
+   return xticks;
+ }
++
++uint64
++sys_getreadcount(void)
++{
++  struct proc *p;
++  uint64 total = 0;
++
++  for(p = proc; p < &proc[NPROC]; p++){
++    total += p->read_bytes;
++  }
++  return total;
++}
