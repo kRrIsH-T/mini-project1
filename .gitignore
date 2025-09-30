@@ -4,6 +4,10 @@
 *.so
 *.a
 *.exe
+shell/shell.out
+networking/server
+networking/client
+xv6/kernel/kernel
 
 # Editor files
 .vscode/
