@@ -1,0 +1,46 @@
+# Build artifacts
+*.o
+*.out
+*.so
+*.a
+*.exe
+
+# Editor files
+.vscode/
+*.swp
+*.swo
+*~
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Test outputs and logs
+test_output/
+*.log
+*_log.txt
+server_log.txt
+client_log.txt
+
+# xv6 build files
+xv6/*.img
+xv6/*.asm
+xv6/*.sym
+xv6/kernel/kernel
+xv6/user/_*
+xv6/.gdbinit
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+
+# Networking test files
+networking/tests/test_files/*.received
+networking/tests/test_files/*.out
+
+# Shell history and temporary files
+.shell_history
+shell_history.txt
